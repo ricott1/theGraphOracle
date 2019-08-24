@@ -29,7 +29,6 @@ pragma solidity ^0.5.0;
 contract theGraphOracle {
 
     event QueryCreated(bytes32 queryHash, string company, string product, string queryString, bool isStorageQuery, address queryContract, bytes4 callback);
-    event ResultUintUpdated(bytes32 queryHash, uint[] result);
     event ResultIntUpdated(bytes32 queryHash, int[] result);
     event ResultBoolUpdated(bytes32 queryHash, bool[] result);
     event ResultAddressUpdated(bytes32 queryHash, address[] result);
@@ -83,13 +82,6 @@ contract theGraphOracle {
     * @param _callback The Method ID passed in the original query.
     * @param _result The result as a dynamic sized array (we use function overloading to catch many possible variable types)
     */
-    function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, uint[] memory _result) only_oracle public returns (bool){
-        (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
-        require(status);
-        emit ResultUintUpdated(_queryHash, _result);
-        return true;
-    }
-    
     function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, int[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status);
