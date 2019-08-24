@@ -1,4 +1,4 @@
-async function uploadJson(dict) {
+async function uploadJson(name, dict) {
     //create web3 connection
     const web3Provider = new Web3.providers.HttpProvider(
         "http://ethberlin02.skalenodes.com:10013"
@@ -20,7 +20,7 @@ async function uploadJson(dict) {
     
     let link = filestorage.uploadFile(
         account,
-        file.name,
+        name,
         enc,
         pivateKey
     );
