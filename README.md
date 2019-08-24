@@ -27,6 +27,8 @@ TGO works as follows:
 - `theGraphOracle` emits a `QueryCreated` event, which the off-chain agent intercepts
 - The off-chain agent performs the query on the Graph API and returns the result (in array form) to the original querying contract by calling a callback function
 
+Query examples are provided by the `TestCase.sol` contract.
+
 ## What's next
 
 Ideally we would like to provide users with more flexibile queries, allowing them to get arbitrary JSON data instead of only arrays.
