@@ -93,7 +93,7 @@ contract TestCase {
         string memory _company = "thomasproust";
         string memory _product = "cryptokitties-explorer";
         string memory _queryString = "{cryptoKitties(where:{birthTime_gte:1514761200,birthTime_lt:1519858800},first:10) {owner}}";
-        bytes4 _callback = bytes4(keccak256("updateBlockNumber(uint256[])"));
+        bytes4 _callback = bytes4(keccak256("updateKittyOwner(address[])"));
         oracle.createQuery(_company, _product, _queryString, false, address(this), _callback);
     }
     

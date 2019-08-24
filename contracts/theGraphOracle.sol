@@ -63,6 +63,12 @@ contract theGraphOracle {
     
     /**
     * @dev Emits query with passed parameters. Event log is then intercepted from the off-chain oracle that performs the query and call the updateQuery function.
+    * @param _company The query company.
+    * @param _product The query product.
+    * @param _queryString The query string.
+    * @param _isStorageQuery Set to true to receive Id of file stored on skale as result.
+    * @param _queryContract The query contract address.
+    * @param _callback The callback method to call on the query contract.
     */
     function createQuery (string calldata _company, string calldata _product, string calldata _queryString, bool _isStorageQuery, address _queryContract, bytes4 _callback) external {
         uint t = now;
