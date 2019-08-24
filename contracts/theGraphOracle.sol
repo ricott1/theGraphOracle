@@ -34,10 +34,10 @@ contract theGraphOracle {
     event ResultAddressUpdated(bytes32 queryHash, address[] result);
     event ResultStringUpdated(bytes32 queryHash, string result);
     event ResultBytesUpdated(bytes32 queryHash, bytes result);
-    event ResultStorageUpdated(bytes32 queryHash, bytes oracleStorageId, string result);
+    event ResultStorageUpdated(bytes32 queryHash, string oracleStorageId, string result);
 
     address public oracleAddress;
-    bytes public oracleStorageId;
+    string public oracleStorageId;
 
     // Permits modifications only by the oracle address.
     modifier only_oracle() {
@@ -56,7 +56,7 @@ contract theGraphOracle {
      * @dev Sets the oracle storage Id for skale file storage.
      * * @param _oracleStorageId The storage Id value to set.
      */
-    function setOracleStorageId(bytes memory _oracleStorageId) only_oracle public {
+    function setOracleStorageId(string memory _oracleStorageId) only_oracle public {
         oracleStorageId = _oracleStorageId;
     }
     
