@@ -4,24 +4,29 @@ import "./theGraphOracle.sol";
 
 contract ENSfromGraph {
     
+    event ResultUpdated(uint indexed result);
+
+    
     theGraphOracle public oracle;
+    address public oracleAddress;
+    uint public bn;
 
     constructor(address _oracleAddress) public {
         oracle = theGraphOracle(_oracleAddress);
+        oracleAddress = oracle.oracleAddress();
     }
 
-    function getOracleAddress() view public returns (address) {
-        return oracle.oracleAddress();
-    }
-
-    function queryBlockNumber() public returns (bytes32) {
+    function queryBlockNumber() public {
         string memory _company = "ensdomains";
         string memory _product = "ens";
         string memory _queryString = "{transfers(first: 5){blockNumber}}";
-        return oracle.createQuery(_company, _product, _queryString);
+        bytes4 _callback = bytes4(keccak256("updateBlockNumber(uint256)"));
+        oracle.createQuery(_company, _product, _queryString, address(this), _callback);
     }
     
-    function resolveBlockNumber(bytes32 _queryId) public view returns (uint) {
-        return oracle.results(_queryId);
+    function updateBlockNumber(uint _bn) external {
+        //require(msg.sender == oracleAddress);
+        emit ResultUpdated(_bn);
+        bn = _bn;
     }
 }
