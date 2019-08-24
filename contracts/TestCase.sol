@@ -76,7 +76,7 @@ contract TestCase {
         string memory _queryString = "{transfers(first:5){blockNumber}}";
         bytes4 _callback = bytes4(keccak256("updateBlockNumber(uint256[])"));
         bytes32 _queryHash = oracle.getQueryHash(_company, _product, _queryString, false);
-        oracle.createQuery(_queryHash, _company, _product, _queryString, false, address(this), _callback);
+        oracle.createQuery(_queryHash, _company, _product, _queryString, false, _callback);
     }
     
     /**
@@ -98,7 +98,7 @@ contract TestCase {
         string memory _queryString = "{cryptoKitties(where:{birthTime_gte:1514761200,birthTime_lt:1519858800},first:10) {owner}}";
         bytes4 _callback = bytes4(keccak256("updateKittyOwner(address[])"));
         bytes32 _queryHash = oracle.getQueryHash(_company, _product, _queryString, false);
-        oracle.createQuery(_queryHash, _company, _product, _queryString, false, address(this), _callback);
+        oracle.createQuery(_queryHash, _company, _product, _queryString, false, _callback);
     }
     
     /**
@@ -120,7 +120,7 @@ contract TestCase {
         string memory _queryString = "{domains(first:5){idnamelabelNamelabelhash}transfers(first:5){iddomain{id}blockNumbertransactionID}}";
         bytes4 _callback = bytes4(keccak256("updateENSStorage(string)"));
         bytes32 _queryHash = oracle.getQueryHash(_company, _product, _queryString, true);
-        oracle.createQuery(_queryHash, _company, _product, _queryString, true, address(this), _callback);
+        oracle.createQuery(_queryHash, _company, _product, _queryString, true, _callback);
     }
     
     /**
