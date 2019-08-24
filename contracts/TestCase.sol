@@ -118,7 +118,7 @@ contract TestCase {
         string memory _company = "ensdomains";
         string memory _product = "ens";
         string memory _queryString = "{domains(first:5){idnamelabelNamelabelhash}transfers(first:5){iddomain{id}blockNumbertransactionID}}";
-        bytes4 _callback = bytes4(keccak256("updateENSStorage(address[])"));
+        bytes4 _callback = bytes4(keccak256("updateENSStorage(string)"));
         bytes32 _queryHash = oracle.getQueryHash(_company, _product, _queryString, true);
         oracle.createQuery(_queryHash, _company, _product, _queryString, true, address(this), _callback);
     }
