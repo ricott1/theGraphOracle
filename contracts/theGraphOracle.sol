@@ -28,7 +28,7 @@ pragma solidity ^0.5.0;
  */
 contract theGraphOracle {
 
-    event QueryCreated(bytes32 queryHash, string company, string product, string queryString, bool isStorageQuery, address queryContract, bytes4 callback);
+    event QueryCreated(string company, string product, string queryString, bool isStorageQuery, address queryContract, bytes4 callback);
     event ResultIntUpdated(bytes32 queryHash, int[] result);
     event ResultBoolUpdated(bytes32 queryHash, bool[] result);
     event ResultAddressUpdated(bytes32 queryHash, address[] result);
@@ -70,9 +70,7 @@ contract theGraphOracle {
     * @param _callback The callback method to call on the query contract.
     */
     function createQuery (string calldata _company, string calldata _product, string calldata _queryString, bool _isStorageQuery, address _queryContract, bytes4 _callback) external {
-        uint t = now;
-        bytes32 _queryHash = keccak256(abi.encode(_company, _product, _queryString, _isStorageQuery, t));
-        emit QueryCreated(_queryHash, _company, _product, _queryString, _isStorageQuery, _queryContract, _callback);
+        emit QueryCreated(_company, _product, _queryString, _isStorageQuery, _queryContract, _callback);
     }
 
     /**
