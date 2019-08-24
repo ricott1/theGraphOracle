@@ -29,7 +29,7 @@ pragma solidity ^0.5.0;
 contract theGraphOracle {
 
     event QueryCreated(bytes32 _queryHash, string company, string product, string queryString, bool isStorageQuery, address queryContract, bytes4 callback);
-    event ResultIntUpdated(bytes32 queryHash, uint[] result);
+    event ResultUintUpdated(bytes32 queryHash, uint[] result);
     event ResultBoolUpdated(bytes32 queryHash, bool[] result);
     event ResultAddressUpdated(bytes32 queryHash, address[] result);
     event ResultStringUpdated(bytes32 queryHash, string result);
@@ -88,7 +88,7 @@ contract theGraphOracle {
     function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, uint[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status, "Failed callback");
-        emit ResultIntUpdated(_queryHash, _result);
+        emit ResultUintUpdated(_queryHash, _result);
         return true;
     }
     
