@@ -27,6 +27,9 @@ def create_graphql_request(company, product, query):
 def process_val(val):
     if isinstance(val, int):
         return w3.toInt(val)
+    if w3.isAddress(val):
+        return w3.toChecksumAddress(val)
+    return val
 
 def process_graphql_response(response):
 	response_data = response["data"]
