@@ -28,15 +28,17 @@ pragma solidity ^0.5.0;
  */
 contract theGraphOracle {
 
-    event QueryCreated(string company, string product, string queryString, address _queryContract, bytes4 _callback);
+    event QueryCreated(string company, string product, string queryString, bool _isStorageQuery, address _queryContract, bytes4 _callback);
 
     address public oracleAddress;
+    bytes public oracleStorageId;
 
     // Permits modifications only by the oracle address.
     modifier only_oracle() {
         require(msg.sender == oracleAddress, "Only oracle address can call this function.");
         _;
     }
+
     /**
      * @dev Sets oracle whitelisted address.
      */
@@ -45,10 +47,17 @@ contract theGraphOracle {
     }
 
     /**
+     * @dev Sets the oracle storage Id for skale file storage.
+     */
+    function setOracleStorageId(bytes _oracleStorageId) only_oracle {
+        oracleStorageId = _oracleStorageId;
+    }
+    
+    /**
     * @dev Emits query with passed parameters. Event log is then intercepted from the off-chain oracle that performs the query and call the updateQuery function.
     */
-    function createQuery (string calldata _company, string calldata _product, string calldata _queryString, address _queryContract, bytes4 _callback) external {
-        emit QueryCreated(_company, _product, _queryString, _queryContract, _callback);
+    function createQuery (string calldata _company, string calldata _product, string calldata _queryString, bool _isStorageQuery, address _queryContract, bytes4 _callback) external {
+        emit QueryCreated(_company, _product, _queryString, _isStorageQuery, _queryContract, _callback);
     }
 
     /**
@@ -57,15 +66,13 @@ contract theGraphOracle {
     * @param _callback The Method ID passed in the original query.
     * @param _result The result as a dynamic sized array (we use function overloading to catch many possible variable types)
     */
-    function updateQuery(address _queryContract, bytes4 _callback, uint[] memory _result) public returns (bool){
-        require(msg.sender == oracleAddress);
+    function updateQuery(address _queryContract, bytes4 _callback, uint[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status);
         return true;
     }
     
-    function updateQuery(address _queryContract, bytes4 _callback, int[] memory _result) public returns (bool){
-        require(msg.sender == oracleAddress);
+    function updateQuery(address _queryContract, bytes4 _callback, int[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status);
         return true;
@@ -95,5 +102,17 @@ contract theGraphOracle {
         require(status);
         return true;
     }
-    
+
+    /**
+    * @dev Send the storage Id to the query contract.
+    * @param _storageId The Id of the skale storage.
+    */
+    function updateQuery(address _queryContract, bytes4 _callback, string memory _result, bool _isStorageQuery) only_oracle public returns (bool){
+        require (_isStorageQuery, "This function should be called only for storage queries.");
+        (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(16), _result));
+        require(status);
+        return true;
+    }
+
+
 }
