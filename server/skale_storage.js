@@ -1,3 +1,4 @@
+const Filestorage = require('@skalenetwork/filestorage.js/src/index')
 async function uploadJson(name, dict) {
     //create web3 connection
     const web3Provider = new Web3.providers.HttpProvider(
@@ -6,7 +7,7 @@ async function uploadJson(name, dict) {
     let web3 = new Web3(web3Provider);
 
     //get filestorage instance
-    let filestorage = new FilestorageClient(web3);
+    let filestorage = new Filestorage(web3, true);
 
     //provide your account & private key
     //note this must include the 0x prefix
