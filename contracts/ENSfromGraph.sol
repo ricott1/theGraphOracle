@@ -14,15 +14,12 @@ contract ENSfromGraph {
         return oracle.oracleAddress();
     }
 
-    function createBlockNumbersQuery(uint _number) public returns (bytes32) {
-        bytes32 _schema = oracle.stringToBytes32("transfers");
-        bytes32 _parameter = oracle.stringToBytes32("blockNumber");
-        return oracle.createQuery(_schema, _parameter, _number);
+    function queryBlockNumber() public returns (bytes32) {
+        string memory _queryString = "{transfers(first: 5){blockNumber}}";
+        return oracle.createQuery(_queryString);
     }
     
-    function resolveBlockNumbersQuery(bytes32 _queryHash) public returns (uint) {
-        bytes32 _schema = oracle.stringToBytes32("transfers");
-        bytes32 _parameter = oracle.stringToBytes32("blockNumber");
-        return oracle.results(_queryHash);
+    function resolveBlockNumber(bytes32 _queryId) public view returns (uint) {
+        return oracle.results(_queryId);
     }
 }
