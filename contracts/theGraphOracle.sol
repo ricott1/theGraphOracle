@@ -16,44 +16,17 @@ contract theGraphOracle {
 
     function updateQuery(address _queryContract, bytes4 _callback, uint[] memory _result) public returns (bool){
         require(msg.sender == oracleAddress);
-        (bool status,) = _queryContract.call(abi.encodePacked(_callback, _result));
-        require(status);
-        return true;
-    }
-    
-    function updateQuery(address _queryContract, bytes4 _callback, int[] memory _result) public returns (bool){
-        require(msg.sender == oracleAddress);
-        (bool status,) = _queryContract.call(abi.encodePacked(_callback, _result));
+        (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status);
         return true;
     }
     
     function updateQuery(address _queryContract, bytes4 _callback, address[] memory _result) public returns (bool){
         require(msg.sender == oracleAddress);
-        (bool status,) = _queryContract.call(abi.encodePacked(_callback, _result));
+        (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status);
         return true;
     }
-    
-    function updateQuery(address _queryContract, bytes4 _callback, string memory _result) public returns (bool){
-        require(msg.sender == oracleAddress);
-        (bool status,) = _queryContract.call(abi.encodePacked(_callback, _result));
-        require(status);
-        return true;
-    }
-    
-    function updateQuery(address _queryContract, bytes4 _callback, bytes memory _result) public returns (bool){
-        require(msg.sender == oracleAddress);
-        (bool status,) = _queryContract.call(abi.encodePacked(_callback, _result));
-        require(status);
-        return true;
-    }
-    
-    function updateQuery(address _queryContract, bytes4 _callback, bool[] memory _result) public returns (bool){
-        require(msg.sender == oracleAddress);
-        (bool status,) = _queryContract.call(abi.encodePacked(_callback, _result));
-        require(status);
-        return true;
-    }
+
     
 }

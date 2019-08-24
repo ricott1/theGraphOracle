@@ -4,7 +4,7 @@ import "./theGraphOracle.sol";
 
 contract ENSfromGraph {
     
-    event ResultUpdated(uint indexed result);
+    event ResultUpdated(uint indexed result, uint indexed resultLength);
     
     theGraphOracle public oracle;
     uint public bn;
@@ -22,13 +22,14 @@ contract ENSfromGraph {
         string memory _company = "ensdomains";
         string memory _product = "ens";
         string memory _queryString = "{transfers(first: 5){blockNumber}}";
-        bytes4 _callback = bytes4(keccak256("updateBlockNumber(uint256)"));
+        bytes4 _callback = bytes4(keccak256("updateBlockNumber(uint256[])"));
         oracle.createQuery(_company, _product, _queryString, address(this), _callback);
     }
     
     function updateBlockNumber(uint[] calldata _bns) from_oracle external {
-        require(_bns.length == 5);
-        emit ResultUpdated(_bns[0]);
+        emit ResultUpdated(_bns[0],_bns.length);
+        //require(_bns.length == 5);
+       
         bn = _bns[0];
     }
 }
