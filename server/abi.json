@@ -3,6 +3,10 @@
 		"constant": false,
 		"inputs": [
 			{
+				"name": "_queryHash",
+				"type": "bytes32"
+			},
+			{
 				"name": "_queryContract",
 				"type": "address"
 			},
@@ -12,7 +16,7 @@
 			},
 			{
 				"name": "_result",
-				"type": "address[]"
+				"type": "uint256[]"
 			}
 		],
 		"name": "updateQuery",
@@ -22,6 +26,86 @@
 				"type": "bool"
 			}
 		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_queryHash",
+				"type": "bytes32"
+			},
+			{
+				"name": "_queryContract",
+				"type": "address"
+			},
+			{
+				"name": "_callback",
+				"type": "bytes4"
+			},
+			{
+				"name": "_result",
+				"type": "string"
+			},
+			{
+				"name": "_isStorageQuery",
+				"type": "bool"
+			}
+		],
+		"name": "updateQuery",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_queryHash",
+				"type": "bytes32"
+			},
+			{
+				"name": "_queryContract",
+				"type": "address"
+			},
+			{
+				"name": "_callback",
+				"type": "bytes4"
+			},
+			{
+				"name": "_result",
+				"type": "string"
+			}
+		],
+		"name": "updateQuery",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_oracleStorageId",
+				"type": "bytes"
+			}
+		],
+		"name": "setOracleStorageId",
+		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -40,6 +124,10 @@
 			{
 				"name": "_queryString",
 				"type": "string"
+			},
+			{
+				"name": "_isStorageQuery",
+				"type": "bool"
 			},
 			{
 				"name": "_queryContract",
@@ -74,6 +162,10 @@
 		"constant": false,
 		"inputs": [
 			{
+				"name": "_queryHash",
+				"type": "bytes32"
+			},
+			{
 				"name": "_queryContract",
 				"type": "address"
 			},
@@ -83,7 +175,83 @@
 			},
 			{
 				"name": "_result",
-				"type": "uint256[]"
+				"type": "bytes"
+			}
+		],
+		"name": "updateQuery",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "oracleStorageId",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_queryHash",
+				"type": "bytes32"
+			},
+			{
+				"name": "_queryContract",
+				"type": "address"
+			},
+			{
+				"name": "_callback",
+				"type": "bytes4"
+			},
+			{
+				"name": "_result",
+				"type": "address[]"
+			}
+		],
+		"name": "updateQuery",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_queryHash",
+				"type": "bytes32"
+			},
+			{
+				"name": "_queryContract",
+				"type": "address"
+			},
+			{
+				"name": "_callback",
+				"type": "bytes4"
+			},
+			{
+				"name": "_result",
+				"type": "bool[]"
 			}
 		],
 		"name": "updateQuery",
@@ -128,16 +296,128 @@
 			},
 			{
 				"indexed": false,
-				"name": "_queryContract",
+				"name": "isStorageQuery",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"name": "queryContract",
 				"type": "address"
 			},
 			{
 				"indexed": false,
-				"name": "_callback",
+				"name": "callback",
 				"type": "bytes4"
 			}
 		],
 		"name": "QueryCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "queryHash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "result",
+				"type": "uint256[]"
+			}
+		],
+		"name": "ResultUintUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "queryHash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "result",
+				"type": "bool[]"
+			}
+		],
+		"name": "ResultBoolUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "queryHash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "result",
+				"type": "address[]"
+			}
+		],
+		"name": "ResultAddressUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "queryHash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "result",
+				"type": "string"
+			}
+		],
+		"name": "ResultStringUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "queryHash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "result",
+				"type": "bytes"
+			}
+		],
+		"name": "ResultBytesUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "queryHash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "oracleStorageId",
+				"type": "bytes"
+			},
+			{
+				"indexed": false,
+				"name": "result",
+				"type": "string"
+			}
+		],
+		"name": "ResultStorageUpdated",
 		"type": "event"
 	}
 ]
