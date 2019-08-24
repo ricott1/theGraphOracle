@@ -29,7 +29,7 @@ import "./theGraphOracle.sol";
  */
 contract TestCase {
     
-    event BlockNumbersUpdated(uint[] result);
+    event BlockNumbersUpdated(int[] result);
     event KittyOwnersUpdated(address[] result);
     
     theGraphOracle public oracle;

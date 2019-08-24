@@ -84,21 +84,21 @@ contract theGraphOracle {
     */
     function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, int[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
-        require(status);
+        require(status, "Failed callback");
         emit ResultIntUpdated(_queryHash, _result);
         return true;
     }
     
     function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, bool[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
-        require(status);
+        require(status, "Failed callback");
         emit ResultBoolUpdated(_queryHash, _result);
         return true;
     }
     
     function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, address[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
-        require(status);
+        require(status, "Failed callback");
         emit ResultAddressUpdated(_queryHash, _result);
         return true;
     }
@@ -106,14 +106,14 @@ contract theGraphOracle {
     function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, string memory _result) only_oracle public returns (bool){
         //bytes(_result).length not always returns expected result. Use with extreme caution (or just don't return string).
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(bytes(_result).length), _result));
-        require(status);
+        require(status, "Failed callback");
         emit ResultStringUpdated(_queryHash, _result);
         return true;
     }
     
     function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, bytes memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
-        require(status);
+        require(status, "Failed callback");
         emit ResultBytesUpdated(_queryHash, _result);
         return true;
     }
@@ -129,7 +129,7 @@ contract theGraphOracle {
     function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, string memory _result, bool _isStorageQuery) only_oracle public returns (bool){
         require (_isStorageQuery, "This function should be called only for storage queries.");
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(16), _result));
-        require(status);
+        require(status, "Failed callback");
         emit ResultStorageUpdated(_queryHash, oracleStorageId, _result);
         return true;
     }
