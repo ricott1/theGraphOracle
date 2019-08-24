@@ -28,7 +28,7 @@ pragma solidity ^0.5.0;
  */
 contract theGraphOracle {
 
-    event QueryCreated(string company, string product, string queryString, bool _isStorageQuery, address _queryContract, bytes4 _callback);
+    event QueryCreated(string company, string product, string queryString, bool isStorageQuery, address queryContract, bytes4 callback);
 
     address public oracleAddress;
     bytes public oracleStorageId;
@@ -48,8 +48,9 @@ contract theGraphOracle {
 
     /**
      * @dev Sets the oracle storage Id for skale file storage.
+     * * @param _oracleStorageId The storage Id value to set.
      */
-    function setOracleStorageId(bytes _oracleStorageId) only_oracle {
+    function setOracleStorageId(bytes memory _oracleStorageId) only_oracle public {
         oracleStorageId = _oracleStorageId;
     }
     
@@ -105,7 +106,10 @@ contract theGraphOracle {
 
     /**
     * @dev Send the storage Id to the query contract.
-    * @param _storageId The Id of the skale storage.
+    * @param _queryContract The address of the contract that created the query.
+    * @param _callback The Method ID passed in the original query.
+    * @param _result The result string identifying the stored file.
+    * *param _isStorageQuery A bool used to override function. Should be set to true.
     */
     function updateQuery(address _queryContract, bytes4 _callback, string memory _result, bool _isStorageQuery) only_oracle public returns (bool){
         require (_isStorageQuery, "This function should be called only for storage queries.");
