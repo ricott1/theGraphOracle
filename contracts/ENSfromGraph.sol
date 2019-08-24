@@ -5,15 +5,17 @@ import "./theGraphOracle.sol";
 contract ENSfromGraph {
     
     event ResultUpdated(uint indexed result);
-
     
     theGraphOracle public oracle;
-    address public oracleAddress;
     uint public bn;
+
+    modifier from_oracle() {
+        require(msg.sender == address(oracle));
+        _;
+    }
 
     constructor(address _oracleAddress) public {
         oracle = theGraphOracle(_oracleAddress);
-        oracleAddress = oracle.oracleAddress();
     }
 
     function queryBlockNumber() public {
@@ -24,9 +26,9 @@ contract ENSfromGraph {
         oracle.createQuery(_company, _product, _queryString, address(this), _callback);
     }
     
-    function updateBlockNumber(uint _bn) external {
-        //require(msg.sender == oracleAddress);
-        emit ResultUpdated(_bn);
-        bn = _bn;
+    function updateBlockNumber(uint[] calldata _bns) from_oracle external {
+        require(_bns.length == 5);
+        emit ResultUpdated(_bns[0]);
+        bn = _bns[0];
     }
 }
