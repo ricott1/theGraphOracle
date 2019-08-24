@@ -1,0 +1,143 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_queryContract",
+				"type": "address"
+			},
+			{
+				"name": "_callback",
+				"type": "bytes4"
+			},
+			{
+				"name": "_result",
+				"type": "address[]"
+			}
+		],
+		"name": "updateQuery",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_company",
+				"type": "string"
+			},
+			{
+				"name": "_product",
+				"type": "string"
+			},
+			{
+				"name": "_queryString",
+				"type": "string"
+			},
+			{
+				"name": "_queryContract",
+				"type": "address"
+			},
+			{
+				"name": "_callback",
+				"type": "bytes4"
+			}
+		],
+		"name": "createQuery",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "oracleAddress",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_queryContract",
+				"type": "address"
+			},
+			{
+				"name": "_callback",
+				"type": "bytes4"
+			},
+			{
+				"name": "_result",
+				"type": "uint256[]"
+			}
+		],
+		"name": "updateQuery",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_oracleAddress",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "company",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "product",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "queryString",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "_queryContract",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_callback",
+				"type": "bytes4"
+			}
+		],
+		"name": "QueryCreated",
+		"type": "event"
+	}
+]

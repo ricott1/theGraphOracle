@@ -1,3 +1,8 @@
-bin/
-include/
+bin
+db.sqlite3
+include
+lib
 pip-selfcheck.json
+__pycache__ 
+rinkeby.json
+secrets.py
