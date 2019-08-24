@@ -29,11 +29,11 @@ import "./theGraphOracle.sol";
  */
 contract TestCase {
     
-    event BlockNumbersUpdated(int[] result);
+    event BlockNumbersUpdated(uint[] result);
     event KittyOwnersUpdated(address[] result);
     
     theGraphOracle public oracle;
-    int[] public bns;
+    uint[] public bns;
     address[] public kittyOwners;
     address public owner;
 
@@ -80,7 +80,7 @@ contract TestCase {
      * @dev Callback function passed to the oracle.
      * @param _result The result of the query.
      */
-    function updateBlockNumber(int[] calldata _result) from_oracle external {
+    function updateBlockNumber(uint[] calldata _result) from_oracle external {
         require(_result.length == 5, "This function requires a length 5 array.");
         emit BlockNumbersUpdated(_result);
         bns = _result;
