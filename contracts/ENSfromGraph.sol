@@ -15,8 +15,10 @@ contract ENSfromGraph {
     }
 
     function queryBlockNumber() public returns (bytes32) {
+        string memory _company = "ensdomains";
+        string memory _product = "ens";
         string memory _queryString = "{transfers(first: 5){blockNumber}}";
-        return oracle.createQuery(_queryString);
+        return oracle.createQuery(_company, _product, _queryString);
     }
     
     function resolveBlockNumber(bytes32 _queryId) public view returns (uint) {
