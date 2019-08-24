@@ -1,7 +1,7 @@
 const Filestorage = require('@skalenetwork/filestorage.js/src/index')
 const Web3 = require("web3")
 const btoa = require("btoa")
-async function uploadJson(name, dict) {
+async function uploadJson(name, dictstring) {
     //create web3 connection
     const web3Provider = new Web3.providers.HttpProvider(
         "http://ethberlin02.skalenodes.com:10013"
@@ -17,7 +17,7 @@ async function uploadJson(name, dict) {
     let account = "[YOUR_ACCOUNT_ADDRESS]";
 
     //get file data from file upload input field
-    let dictstring = JSON.stringify(dict);
+    //let dictstring = JSON.stringify(dict);
     const enc = stringToUint(dictstring);
     //let dec = JSON.parse(uintToString(enc));
     
@@ -50,4 +50,5 @@ function uintToString(uintArray) {
     return decodedString;
 }
 
-uploadJson("wow2", {"shshs": "dsdsds"})
+var args = process.argv.slice(2);
+uploadJson(args[0], args[1])

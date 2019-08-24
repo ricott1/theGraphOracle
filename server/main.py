@@ -3,6 +3,7 @@ import time
 from secrets import graph_token, p_key
 import requests
 import json
+import subprocess
 
 w3 = Web3(Web3.HTTPProvider("http://ethberlin02.skalenodes.com:10013"))
 
@@ -71,6 +72,8 @@ while True:
                 'nonce': nonce,
             })
             signed_txn = w3.eth.account.sign_transaction(quert_txn, private_key=p_key)
-            w3.eth.sendRawTransaction(signed_txn.rawTransaction)  
+            w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        else:
+            subprocess.run(["node", "skale_storage.js", queryhash, json.dumps(graph_result)])
         length = len(event_filter.get_all_entries())
     time.sleep(2)
