@@ -28,7 +28,14 @@ pragma solidity ^0.5.0;
  */
 contract theGraphOracle {
 
-    event QueryCreated(string company, string product, string queryString, bool isStorageQuery, address queryContract, bytes4 callback);
+    event QueryCreated(bytes32 queryHash, string company, string product, string queryString, bool isStorageQuery, address queryContract, bytes4 callback);
+    event ResultUintUpdated(bytes32 queryHash, uint[] result);
+    event ResultIntUpdated(bytes32 queryHash, int[] result);
+    event ResultBoolUpdated(bytes32 queryHash, bool[] result);
+    event ResultAddressUpdated(bytes32 queryHash, address[] result);
+    event ResultStringUpdated(bytes32 queryHash, string result);
+    event ResultBytesUpdated(bytes32 queryHash, bytes result);
+    event ResultStorageUpdated(bytes32 queryHash, bytes oracleStorageId, string result);
 
     address public oracleAddress;
     bytes public oracleStorageId;
@@ -58,63 +65,74 @@ contract theGraphOracle {
     * @dev Emits query with passed parameters. Event log is then intercepted from the off-chain oracle that performs the query and call the updateQuery function.
     */
     function createQuery (string calldata _company, string calldata _product, string calldata _queryString, bool _isStorageQuery, address _queryContract, bytes4 _callback) external {
-        emit QueryCreated(_company, _product, _queryString, _isStorageQuery, _queryContract, _callback);
+        uint t = now;
+        bytes32 _queryHash = keccak256(abi.encode(_company, _product, _queryString, _isStorageQuery, t));
+        emit QueryCreated(_queryHash, _company, _product, _queryString, _isStorageQuery, _queryContract, _callback);
     }
 
     /**
     * @dev Updates the contract that created the query by calling the specified callback function and passing the result as a parameter.
+    * @param _queryHash The query hash for subgraph hook.
     * @param _queryContract The address of the contract that created the query.
     * @param _callback The Method ID passed in the original query.
     * @param _result The result as a dynamic sized array (we use function overloading to catch many possible variable types)
     */
-    function updateQuery(address _queryContract, bytes4 _callback, uint[] memory _result) only_oracle public returns (bool){
+    function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, uint[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status);
+        emit ResultUintUpdated(_queryHash, _result);
         return true;
     }
     
-    function updateQuery(address _queryContract, bytes4 _callback, int[] memory _result) only_oracle public returns (bool){
+    function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, int[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status);
+        emit ResultIntUpdated(_queryHash, _result);
         return true;
     }
     
-    function updateQuery(address _queryContract, bytes4 _callback, bool[] memory _result) only_oracle public returns (bool){
+    function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, bool[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status);
+        emit ResultBoolUpdated(_queryHash, _result);
         return true;
     }
     
-    function updateQuery(address _queryContract, bytes4 _callback, address[] memory _result) only_oracle public returns (bool){
+    function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, address[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status);
+        emit ResultAddressUpdated(_queryHash, _result);
         return true;
     }
 
-    function updateQuery(address _queryContract, bytes4 _callback, string memory _result) only_oracle public returns (bool){
+    function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, string memory _result) only_oracle public returns (bool){
         //bytes(_result).length not always returns expected result. Use with extreme caution (or just don't return string).
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(bytes(_result).length), _result));
         require(status);
+        emit ResultStringUpdated(_queryHash, _result);
         return true;
     }
     
-    function updateQuery(address _queryContract, bytes4 _callback, bytes memory _result) only_oracle public returns (bool){
+    function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, bytes memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status);
+        emit ResultBytesUpdated(_queryHash, _result);
         return true;
     }
 
     /**
     * @dev Send the storage Id to the query contract.
+    * @param _queryHash The query hash for subgraph hook.
     * @param _queryContract The address of the contract that created the query.
     * @param _callback The Method ID passed in the original query.
     * @param _result The result string identifying the stored file.
     * *param _isStorageQuery A bool used to override function. Should be set to true.
     */
-    function updateQuery(address _queryContract, bytes4 _callback, string memory _result, bool _isStorageQuery) only_oracle public returns (bool){
+    function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, string memory _result, bool _isStorageQuery) only_oracle public returns (bool){
         require (_isStorageQuery, "This function should be called only for storage queries.");
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(16), _result));
         require(status);
+        emit ResultStorageUpdated(_queryHash, oracleStorageId, _result);
         return true;
     }
 
