@@ -31,10 +31,12 @@ contract TestCase {
     
     event BlockNumbersUpdated(uint[] result);
     event KittyOwnersUpdated(address[] result);
+    event ENSStorageUpdated(string result);
     
     theGraphOracle public oracle;
     uint[] public bns;
     address[] public kittyOwners;
+    string public ensStorage;
     address public owner;
 
     // Permits modifications only by the owner of the contract.
@@ -73,7 +75,8 @@ contract TestCase {
         string memory _product = "ens";
         string memory _queryString = "{transfers(first:5){blockNumber}}";
         bytes4 _callback = bytes4(keccak256("updateBlockNumber(uint256[])"));
-        oracle.createQuery(_company, _product, _queryString, false, address(this), _callback);
+        bytes32 _queryHash = oracle.getQueryHash(_company, _product, _queryString, false);
+        oracle.createQuery(_queryHash, _company, _product, _queryString, false, address(this), _callback);
     }
     
     /**
@@ -87,14 +90,15 @@ contract TestCase {
     }
     
      /**
-     * @dev Creates a query on theGraphOracle for ENS blockNumbers.
+     * @dev Creates a query on theGraphOracle for CryptoKitties owners.
      */
     function queryCryptoKitties() public {
         string memory _company = "thomasproust";
         string memory _product = "cryptokitties-explorer";
         string memory _queryString = "{cryptoKitties(where:{birthTime_gte:1514761200,birthTime_lt:1519858800},first:10) {owner}}";
         bytes4 _callback = bytes4(keccak256("updateKittyOwner(address[])"));
-        oracle.createQuery(_company, _product, _queryString, false, address(this), _callback);
+        bytes32 _queryHash = oracle.getQueryHash(_company, _product, _queryString, false);
+        oracle.createQuery(_queryHash, _company, _product, _queryString, false, address(this), _callback);
     }
     
     /**
@@ -105,6 +109,27 @@ contract TestCase {
         require(_result.length == 10, "This function requires a length 10 array.");
         emit KittyOwnersUpdated(_result);
         kittyOwners = _result;
+    }
+    
+      /**
+     * @dev Creates a query on theGraphOracle for ENS data and store it in file.
+     */
+    function queryENSStorage() public {
+        string memory _company = "ensdomains";
+        string memory _product = "ens";
+        string memory _queryString = "{domains(first:5){idnamelabelNamelabelhash}transfers(first:5){iddomain{id}blockNumbertransactionID}}";
+        bytes4 _callback = bytes4(keccak256("updateENSStorage(address[])"));
+        bytes32 _queryHash = oracle.getQueryHash(_company, _product, _queryString, true);
+        oracle.createQuery(_queryHash, _company, _product, _queryString, true, address(this), _callback);
+    }
+    
+    /**
+     * @dev Callback function passed to the oracle.
+     * @param _result The result of the query.
+     */
+    function updateENSStorage(string calldata _result) from_oracle external {
+        emit ENSStorageUpdated(_result);
+        ensStorage = _result;
     }
     
 }

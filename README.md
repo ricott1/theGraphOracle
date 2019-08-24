@@ -1,4 +1,4 @@
-# theGraph Oracle
+# The Graph Oracle
 
 The Graph is a platform offering the possibility to query smart contracts on the blockchain. Using a simple API one can retrieve all the data they need *off-chain*.
 

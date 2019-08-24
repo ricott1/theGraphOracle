@@ -28,8 +28,8 @@ pragma solidity ^0.5.0;
  */
 contract theGraphOracle {
 
-    event QueryCreated(string company, string product, string queryString, bool isStorageQuery, address queryContract, bytes4 callback);
-    event ResultUintUpdated(bytes32 queryHash, uint[] result);
+    event QueryCreated(bytes32 _queryHash, string company, string product, string queryString, bool isStorageQuery, address queryContract, bytes4 callback);
+    event ResultIntUpdated(bytes32 queryHash, uint[] result);
     event ResultBoolUpdated(bytes32 queryHash, bool[] result);
     event ResultAddressUpdated(bytes32 queryHash, address[] result);
     event ResultStringUpdated(bytes32 queryHash, string result);
@@ -69,8 +69,13 @@ contract theGraphOracle {
     * @param _queryContract The query contract address.
     * @param _callback The callback method to call on the query contract.
     */
-    function createQuery (string calldata _company, string calldata _product, string calldata _queryString, bool _isStorageQuery, address _queryContract, bytes4 _callback) external {
-        emit QueryCreated(_company, _product, _queryString, _isStorageQuery, _queryContract, _callback);
+    function createQuery (bytes32 _queryHash, string calldata _company, string calldata _product, string calldata _queryString, bool _isStorageQuery, address _queryContract, bytes4 _callback) external {
+        emit QueryCreated(_queryHash, _company, _product, _queryString, _isStorageQuery, _queryContract, _callback);
+    }
+    
+    function getQueryHash (string memory _company, string memory _product, string memory _queryString, bool _isStorageQuery) public view returns(bytes32) {
+        uint t = now;
+        return keccak256(abi.encode(_company, _product, _queryString, _isStorageQuery, t));   
     }
 
     /**
@@ -83,7 +88,7 @@ contract theGraphOracle {
     function updateQuery(bytes32 _queryHash, address _queryContract, bytes4 _callback, uint[] memory _result) only_oracle public returns (bool){
         (bool status,) = _queryContract.call(abi.encodePacked(_callback, uint(32), uint(_result.length), _result));
         require(status, "Failed callback");
-        emit ResultUintUpdated(_queryHash, _result);
+        emit ResultIntUpdated(_queryHash, _result);
         return true;
     }
     
