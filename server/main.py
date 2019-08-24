@@ -19,10 +19,30 @@ contract.address = contractAddress  # THIS LINE!
 
 def create_graphql_request(company, product, query):
     url = 'https://api.thegraph.com/subgraphs/name/{}/{}'.format(company, product)
-    json = { 'query' : query}
+    json_query = { 'query' : query}
     headers = {'Authorization': 'token %s' % graph_token}
-    response = requests.post(url=url, json=json, headers=headers)
-    return response
+    response = requests.post(url=url, json=json_query, headers=headers)
+    return json.loads(response.content)
+
+def process_val(val):
+    if isinstance(val, int):
+        return w3.toInt(val)
+
+def process_graphql_response(response):
+	response_data = response["data"]
+	result = []
+	def _get_normalized_response(data):
+		if not isinstance(data, list) and not isinstance(data, dict):
+			if data is not None:
+				result.append(process_val(data))
+			return
+		for x in data:
+			if isinstance(data, list):
+				_get_normalized_response(x)
+			elif isinstance(data, dict):
+				_get_normalized_response(data[x])
+	_get_normalized_response(response_data)
+	return result
 
 length = 0
 while True:
@@ -38,7 +58,8 @@ while True:
         response = create_graphql_request(company, product, query)
         con_add = event_args["queryContract"]
         con_call = event_args["callback"]
-        x = contract.functions.updateQuery(queryhash, w3.toChecksumAddress(con_add), w3.toBytes(con_call), [w3.toInt(1), w3.toInt(1), w3.toInt(12), w3.toInt(31), w3.toInt(311)])
+        graph_result = process_graphql_response(response)
+        x = contract.functions.updateQuery(queryhash, w3.toChecksumAddress(con_add), w3.toBytes(con_call), graph_result)
         if not is_storage:
             nonce = w3.eth.getTransactionCount(account.address)  
             quert_txn = x.buildTransaction({
