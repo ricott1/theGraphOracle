@@ -6,7 +6,7 @@ import json
 
 w3 = Web3(Web3.HTTPProvider("http://ethberlin02.skalenodes.com:10013"))
 
-contract_address = '0x3e56f8fe5ca525a3e4b80826a70b4265bf9875dd'
+contract_address = '0xbdbd66a7cec1e9d2e2451b9de78bb1a5b3001cd5'
 contractAddress = Web3.toChecksumAddress(contract_address)
 account =  w3.eth.account.from_key(p_key)
 w3.eth.defaultAccount = account.address
@@ -33,11 +33,12 @@ while True:
         company = event_args["company"]
         product = event_args["product"]
         query = event_args["queryString"]
+        queryhash = event_args["_queryHash"]
         is_storage = event_args.get("isStorageQuery", False)
         response = create_graphql_request(company, product, query)
         con_add = event_args["queryContract"]
         con_call = event_args["callback"]
-        x = contract.functions.updateQuery("0x68656c6c6f0000000000000000000000", w3.toChecksumAddress(con_add), w3.toBytes(con_call), [w3.toInt(1), w3.toInt(1), w3.toInt(12), w3.toInt(31), w3.toInt(311)])
+        x = contract.functions.updateQuery(queryhash, w3.toChecksumAddress(con_add), w3.toBytes(con_call), [w3.toInt(1), w3.toInt(1), w3.toInt(12), w3.toInt(31), w3.toInt(311)])
         if not is_storage:
             nonce = w3.eth.getTransactionCount(account.address)  
             quert_txn = x.buildTransaction({
