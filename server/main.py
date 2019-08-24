@@ -14,14 +14,21 @@ with open("abi.json") as f:
 contract = w3.eth.contract(address=contractAddress, abi=abi)
 contract.address = contractAddress  # THIS LINE!
 
-def create_graphql_request(query):
-    url = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens'
+def create_graphql_request(company, product, query):
+    url = 'https://api.thegraph.com/subgraphs/name/{}/{}'.format(company, product)
     json = { 'query' : query}
     headers = {'Authorization': 'token %s' % graph_token}
-    r = requests.post(url=url, json=json, headers=headers)
-    print (r.text)
-    return 2
+    response = requests.post(url=url, json=json, headers=headers)
+    return response
 
+length = 0
 while True:
     event_filter = contract.events.QueryCreated.createFilter(fromBlock=0)
     print(event_filter.get_all_entries())
+    if length < len(event_filter.get_all_entries()):
+        event_args = event_filter.get_all_entries()[length]["args"]
+        company = event_args["company"]
+        product = event_args["product"]
+        query = event_args["queryString"]
+        response = create_graphql_request(company, product, query)
+    time.sleep(2)
