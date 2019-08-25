@@ -23,10 +23,6 @@
 				"type": "bool"
 			},
 			{
-				"name": "_queryContract",
-				"type": "address"
-			},
-			{
 				"name": "_callback",
 				"type": "bytes4"
 			}
@@ -93,7 +89,7 @@
 				"type": "uint256[]"
 			}
 		],
-		"name": "ResultIntUpdated",
+		"name": "ResultUintUpdated",
 		"type": "event"
 	},
 	{
@@ -175,7 +171,7 @@
 			{
 				"indexed": false,
 				"name": "oracleStorageId",
-				"type": "bytes"
+				"type": "string"
 			},
 			{
 				"indexed": false,
@@ -191,7 +187,7 @@
 		"inputs": [
 			{
 				"name": "_oracleStorageId",
-				"type": "bytes"
+				"type": "string"
 			}
 		],
 		"name": "setOracleStorageId",
@@ -453,7 +449,7 @@
 		"outputs": [
 			{
 				"name": "",
-				"type": "bytes"
+				"type": "string"
 			}
 		],
 		"payable": false,

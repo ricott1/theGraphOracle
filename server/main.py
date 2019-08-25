@@ -9,7 +9,7 @@ import string
 
 w3 = Web3(Web3.HTTPProvider("http://ethberlin02.skalenodes.com:10013"))
 
-contract_address = '0xbdbd66a7cec1e9d2e2451b9de78bb1a5b3001cd5'
+contract_address = '0x1f1e8f456f60b7a5435920b54da5525974ab6bfd'
 contractAddress = Web3.toChecksumAddress(contract_address)
 account =  w3.eth.account.from_key(p_key)
 w3.eth.defaultAccount = account.address
@@ -55,7 +55,6 @@ def process_graphql_response(response, is_storage):
 length = 0
 while True:
     event_filter = contract.events.QueryCreated.createFilter(fromBlock=0)
-    print(event_filter.get_all_entries())
     if length < len(event_filter.get_all_entries()):
         event_args = event_filter.get_all_entries()[-1]["args"]
         company = event_args["company"]
@@ -66,14 +65,18 @@ while True:
         response = create_graphql_request(company, product, query)
         con_add = event_args["queryContract"]
         con_call = event_args["callback"]
+        print("Query ------> ", query)
+        print("")
         graph_result = process_graphql_response(response, is_storage)
+        print("Result -----> ", graph_result)
+        print("")
         if is_storage:
             file_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))
             return_value = file_name
         else:
             return_value = graph_result
 
-        x = contract.functions.updateQuery(queryhash, w3.toChecksumAddress(con_add), w3.toBytes(con_call), graph_result)
+        x = contract.functions.updateQuery(queryhash, w3.toChecksumAddress(con_add), w3.toBytes(con_call), return_value)
         nonce = w3.eth.getTransactionCount(account.address)  
         quert_txn = x.buildTransaction({
             'gas': 300000,
@@ -85,4 +88,5 @@ while True:
         if is_storage:
             subprocess.run(["node", "skale_storage.js", file_name, json.dumps(graph_result)])
         length = len(event_filter.get_all_entries())
+        print("--------------------------------------")
     time.sleep(2)
