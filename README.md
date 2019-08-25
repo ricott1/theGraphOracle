@@ -46,6 +46,6 @@ Ideally we would like to provide users with more flexibile queries, allowing the
 ## Contracts
 Address of Oracle and test contract in Ropsten
 
-oracle addr: 0x48e999889bc137bb4dcc2e28f9731ff9d5075084 
+oracle addr: https://ropsten.etherscan.io/address/0x48e999889bc137bb4dcc2e28f9731ff9d5075084
 
-testcase addr: 0xa87825c3c77dce3292eee1a0ab71e40557bd99ac
+testcase addr: https://ropsten.etherscan.io/address/0xa87825c3c77dce3292eee1a0ab71e40557bd99ac
