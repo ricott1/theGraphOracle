@@ -20,6 +20,16 @@ with open("abi.json") as f:
 contract = w3.eth.contract(address=contractAddress, abi=abi)
 contract.address = contractAddress  # THIS LINE!
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 def create_graphql_request(company, product, query):
     url = 'https://api.thegraph.com/subgraphs/name/{}/{}'.format(company, product)
     json_query = { 'query' : query}
@@ -65,10 +75,10 @@ while True:
         response = create_graphql_request(company, product, query)
         con_add = event_args["queryContract"]
         con_call = event_args["callback"]
-        print("Query ------> ", query)
+        print(bcolors.OKGREEN, "Query ------> ", query, bcolors.ENDC)
         print("")
         graph_result = process_graphql_response(response, is_storage)
-        print("Result -----> ", graph_result)
+        print(bcolors.OKBLUE, "Result -----> ", graph_result, bcolors.ENDC)
         print("")
         if is_storage:
             file_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))
