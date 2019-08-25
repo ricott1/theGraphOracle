@@ -1,6 +1,17 @@
 # The Graph Oracle
 
 The Graph Oracle (TGO) provides an oracle that allows users to exploit the power of the Graph directly from their smart contracts.
+```jaavscript
+// Define query
+string memory _queryString = "{cryptoKitties(where:{birthTime_gte:1514761200,birthTime_lt:1519858800},first:10) {owner}}";
+// Define call back function that would be called when the query is completed
+bytes4 _callback = bytes4(keccak256("updateKittyOwner(address[])"));
+// Create a unique identity for query
+bytes32 _queryHash = oracle.getQueryHash(_company, _product, _queryString, false);
+// Execute the query
+oracle.createQuery(_queryHash, _company, _product, _queryString, false, _callback);
+
+```
 
 ## Inspiration
 
