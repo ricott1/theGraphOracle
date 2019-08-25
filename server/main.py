@@ -4,6 +4,8 @@ from secrets import graph_token, p_key
 import requests
 import json
 import subprocess
+import random
+import string
 
 w3 = Web3(Web3.HTTPProvider("http://ethberlin02.skalenodes.com:10013"))
 
@@ -32,21 +34,23 @@ def process_val(val):
         return w3.toChecksumAddress(val)
     return val
 
-def process_graphql_response(response):
-	response_data = response["data"]
-	result = []
-	def _get_normalized_response(data):
-		if not isinstance(data, list) and not isinstance(data, dict):
-			if data is not None:
-				result.append(process_val(data))
-			return
-		for x in data:
-			if isinstance(data, list):
-				_get_normalized_response(x)
-			elif isinstance(data, dict):
-				_get_normalized_response(data[x])
-	_get_normalized_response(response_data)
-	return result
+def process_graphql_response(response, is_storage):
+    response_data = response["data"]
+    if is_storage:
+        return response_data
+    result = []
+    def _get_normalized_response(data):
+        if not isinstance(data, list) and not isinstance(data, dict):
+            if data is not None:
+                result.append(process_val(data))
+            return
+        for x in data:
+            if isinstance(data, list):
+                _get_normalized_response(x)
+            elif isinstance(data, dict):
+                _get_normalized_response(data[x])
+    _get_normalized_response(response_data)
+    return result
 
 length = 0
 while True:
@@ -62,18 +66,23 @@ while True:
         response = create_graphql_request(company, product, query)
         con_add = event_args["queryContract"]
         con_call = event_args["callback"]
-        graph_result = process_graphql_response(response)
-        x = contract.functions.updateQuery(queryhash, w3.toChecksumAddress(con_add), w3.toBytes(con_call), graph_result)
-        if not is_storage:
-            nonce = w3.eth.getTransactionCount(account.address)  
-            quert_txn = x.buildTransaction({
-                'gas': 300000,
-                'gasPrice': w3.toWei('1', 'gwei'),
-                'nonce': nonce,
-            })
-            signed_txn = w3.eth.account.sign_transaction(quert_txn, private_key=p_key)
-            w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        graph_result = process_graphql_response(response, is_storage)
+        if is_storage:
+            file_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))
+            return_value = file_name
         else:
-            subprocess.run(["node", "skale_storage.js", queryhash, json.dumps(graph_result)])
+            return_value = graph_result
+
+        x = contract.functions.updateQuery(queryhash, w3.toChecksumAddress(con_add), w3.toBytes(con_call), graph_result)
+        nonce = w3.eth.getTransactionCount(account.address)  
+        quert_txn = x.buildTransaction({
+            'gas': 300000,
+            'gasPrice': w3.toWei('1', 'gwei'),
+            'nonce': nonce,
+        })
+        signed_txn = w3.eth.account.sign_transaction(quert_txn, private_key=p_key)
+        w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        if is_storage:
+            subprocess.run(["node", "skale_storage.js", file_name, json.dumps(graph_result)])
         length = len(event_filter.get_all_entries())
     time.sleep(2)
