@@ -42,3 +42,10 @@ Query examples are provided by the `TestCase.sol` contract.
 ## What's next
 
 Ideally we would like to provide users with more flexibile queries, allowing them to get arbitrary JSON data instead of only arrays.
+
+## Contracts
+Address of Oracle and test contract in Ropsten
+
+oracle addr: 0x48e999889bc137bb4dcc2e28f9731ff9d5075084 
+
+testcase addr: 0xa87825c3c77dce3292eee1a0ab71e40557bd99ac
